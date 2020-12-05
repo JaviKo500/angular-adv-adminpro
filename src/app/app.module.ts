@@ -9,12 +9,10 @@ import { PagesModule } from './pages/pages.module';
 import { AuthModule } from './auth/auth.module';
 import { NotPageFoundComponent } from './not-page-found/not-page-found.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
     NotPageFoundComponent,
-
   ],
   imports: [
     BrowserModule,
