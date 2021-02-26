@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { RegisterForm } from '../interfaces/register-form.interface';
 import { environment } from 'src/environments/environment';
 import { LoginForm } from '../interfaces/login-form.interface';
+import { Usuario } from '../models/usuario.model';
 
 // google sing in
 declare const gapi: any;
@@ -18,6 +19,9 @@ export class UsuarioService {
   private HTTP_URL = environment.BASE_URL;
    // google sing in
    auth2: any;
+
+   usuario: Usuario;
+   
   constructor( 
     private http: HttpClient,
     private router: Router,
@@ -25,7 +29,13 @@ export class UsuarioService {
   ) {
     this.googleInit();
   }
-  
+
+  get getToken(): string {
+    return localStorage.getItem('token') || '';
+  }
+  get getUid(): string {
+    return this.usuario.uid || '';
+  }
   googleInit = () => {
     return new Promise<void>( resolve => {
       gapi.load('auth2', () => {
@@ -48,13 +58,14 @@ export class UsuarioService {
   };
 
   validarToken = (): Observable<boolean> => {
-    const token = localStorage.getItem('token') || '';
-    return this.http.get(`${this.HTTP_URL}/login/renew`, { headers: { 'x-token': token}})
+    return this.http.get(`${this.HTTP_URL}/login/renew`, { headers: { 'x-token': this.getToken}})
               .pipe(
-                tap((response:  any) => {
-                  localStorage.setItem('token', response.token)
+                map((response:  any) => {
+                  const { email, google, img = '', nombre, rol, uid } = response.usuario;
+                  this.usuario = new Usuario( nombre, email, '', img, google, rol, uid);
+                  localStorage.setItem('token', response.token);                  
+                  return true
                 }),
-                map( response => true),
                 catchError( error => {
                   return of(false);
                 })
@@ -68,6 +79,15 @@ export class UsuarioService {
                 })
               );
   };
+
+  actualizarUsuario = (data: { email: string, nombre: string, rol: string }) => {
+    data = {
+      ...data,
+      rol: this.usuario.role
+    };
+    return this.http.put(`${this.HTTP_URL}/usuarios/${this.getUid}`,data, { headers: { 'x-token': this.getToken} });
+  };
+
   login = ( formData: LoginForm) => {
     return this.http.post(`${this.HTTP_URL}/login`, formData)
               .pipe(
