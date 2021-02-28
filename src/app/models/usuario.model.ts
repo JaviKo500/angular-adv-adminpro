@@ -8,16 +8,18 @@ export class Usuario {
         public password?: string,
         public img?: string,
         public google?: boolean,
-        public role?: string,
+        public rol?: string,
         public uid?: string,
     ){}
     get getImagenURL(){
-        if ( this.img.includes('https') ) { 
+        if ( !this.img  ) {
+            return `${BASE_URL}/upload/usuarios/no-image`;
+        } else if ( this.img.includes('https') ) { 
             return `${this.img}`;    
-        }
-        if ( this.img ) {
+        } else if ( this.img ) {
             return `${BASE_URL}/upload/usuarios/${this.img}`;    
+        } else {
+            return `${BASE_URL}/upload/usuarios/no-image`;
         }
-        return `${BASE_URL}/upload/usuarios/no-image`;
     }
 }

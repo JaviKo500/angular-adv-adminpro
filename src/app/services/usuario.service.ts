@@ -1,14 +1,15 @@
+import { Usuario } from './../models/usuario.model';
 import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, delay, map, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
 
 
-import { RegisterForm } from '../interfaces/register-form.interface';
 import { environment } from 'src/environments/environment';
+import { RegisterForm } from '../interfaces/register-form.interface';
 import { LoginForm } from '../interfaces/login-form.interface';
-import { Usuario } from '../models/usuario.model';
+import { CargarUsuario, MensajeUsuario } from '../interfaces/cargar-usuarios.interface';
 
 // google sing in
 declare const gapi: any;
@@ -35,6 +36,9 @@ export class UsuarioService {
   }
   get getUid(): string {
     return this.usuario.uid || '';
+  }
+  get getHeaders(): any {
+    return {headers :{ 'x-token': this.getToken }};
   }
   googleInit = () => {
     return new Promise<void>( resolve => {
@@ -71,38 +75,56 @@ export class UsuarioService {
                 })
               );
   }
-  crearUsuario = ( formData: RegisterForm) => {
-    return this.http.post(`${this.HTTP_URL}/usuarios`, formData)
-              .pipe(
-                tap( (response: any) => {
-                  localStorage.setItem('token', response.token);
-                })
-              );
-  };
-
-  actualizarUsuario = (data: { email: string, nombre: string, rol: string }) => {
-    data = {
-      ...data,
-      rol: this.usuario.role
-    };
-    return this.http.put(`${this.HTTP_URL}/usuarios/${this.getUid}`,data, { headers: { 'x-token': this.getToken} });
-  };
-
+  
   login = ( formData: LoginForm) => {
     return this.http.post(`${this.HTTP_URL}/login`, formData)
-              .pipe(
-                tap( (response: any) => {
-                  localStorage.setItem('token', response.token);
-                })
-              );
-  };
-  loginGoogle = ( token) => {
-    return this.http.post(`${this.HTTP_URL}/login/google`, {token})
-              .pipe(
-                tap( (response: any) => {
-                  localStorage.setItem('token', response.token);
-                })
-              );
-  };
+    .pipe(
+      tap( (response: any) => {
+        localStorage.setItem('token', response.token);
+      })
+      );
+    };
+    loginGoogle = ( token) => {
+      return this.http.post(`${this.HTTP_URL}/login/google`, {token})
+      .pipe(
+        tap( (response: any) => {
+          localStorage.setItem('token', response.token);
+        })
+        );
+      };
+crearUsuario = ( formData: RegisterForm) => {
+  return this.http.post(`${this.HTTP_URL}/usuarios`, formData)
+            .pipe(
+              tap( (response: any) => {
+                localStorage.setItem('token', response.token);
+              })
+            );
+};
+    
+actualizarUsuario = (data: { email: string, nombre: string, rol: string }) => {
+    data = {
+      ...data,
+      rol: this.usuario.rol
+    };
+    return this.http.put(`${this.HTTP_URL}/usuarios/${this.getUid}`,data, this.getHeaders);
+};
 
+cargarUsuarios = ( desde: number = 0 )=> {
+  return this.http.get<CargarUsuario>(`${this.HTTP_URL}/usuarios?desde=${desde}`, this.getHeaders)
+            .pipe(
+             // delay(1000),
+              map( (response: any) => {                
+                const usuarios = response.usuarios.map(
+                  (usuario: Usuario) => new Usuario( usuario.nombre ,usuario.email, '', usuario.img, usuario.google, usuario.rol, usuario.uid))
+                return {total: response.total, usuarios: usuarios};
+              })
+            );
+};
+
+eliminarUsuario = ( usuario: Usuario ) => {
+  return this.http.delete<MensajeUsuario>(`${this.HTTP_URL}/usuarios/${usuario.uid}`, this.getHeaders);  
+}
+guardarUsuario = (usuario: Usuario) => {
+  return this.http.put(`${this.HTTP_URL}/usuarios/${usuario.uid}`,usuario, this.getHeaders);
+};
 }
