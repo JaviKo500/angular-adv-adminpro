@@ -5,6 +5,8 @@ import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../../environments/environment.prod';
 import { map } from 'rxjs/operators';
+import { Hospital } from '../models/hospital.model';
+import { Medico } from '../models/medico.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,14 +21,24 @@ export class BusquedasService {
     return localStorage.getItem('token') || '';
   }
   get getHeaders(): any {
-    return {headers :{ 'x-token': this.getToken }};
-  } 
-  
+    return {headers: { 'x-token': this.getToken }};
+  }
+
   private transformarUsuarios = ( resultados: any[]): Usuario[] => {
     const usuarios = resultados.map(
       (user: Usuario) => new Usuario(user.nombre, user.email, '', user.img, user.google, user.rol, user.uid)
-      );          
+      );
     return usuarios;
+  }
+  private transformarHospitales = ( resultados: any[]): Hospital[] => {
+    const hospitales = resultados.map(
+      (hosp: Hospital) => new Hospital( hosp._id, hosp.nombre, hosp.img, hosp.usuario)
+      );
+    return hospitales;
+  }
+  private transformarMedicos = ( resultados: any[]): Medico[] => {
+
+    return resultados as Medico [];
   }
 
   buscarData = ( tipo: 'usuarios' | 'medicos' | 'hospitales' , termino: string) => {
@@ -37,9 +49,9 @@ export class BusquedasService {
                           case 'usuarios':
                             return this.transformarUsuarios( response.resultado);
                           case 'hospitales':
-                            return [];
+                            return this.transformarHospitales( response.resultado);
                           case 'medicos':
-                            return [];
+                            return this.transformarMedicos( response.resultado);
                           default:
                             return [];
                         }

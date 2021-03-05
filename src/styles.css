@@ -18,6 +18,11 @@
 
 .w200 {
     width: 200px;
+    height: 200px;
+}
+
+.w140 {
+    width: 140px;
 }
 
 .avatar {
@@ -47,4 +52,9 @@
     width: 200px;
     height: 200px;
     margin-bottom: 5px;
+}
+
+.img {
+    width: 35px;
+    height: 35px;
 }

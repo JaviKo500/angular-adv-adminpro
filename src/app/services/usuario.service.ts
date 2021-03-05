@@ -22,11 +22,11 @@ export class UsuarioService {
    auth2: any;
 
    usuario: Usuario;
-   
-  constructor( 
+
+  constructor(
     private http: HttpClient,
     private router: Router,
-    private ngZone: NgZone 
+    private ngZone: NgZone
   ) {
     this.googleInit();
   }
@@ -75,7 +75,7 @@ export class UsuarioService {
                 })
               );
   }
-  
+
   login = ( formData: LoginForm) => {
     return this.http.post(`${this.HTTP_URL}/login`, formData)
     .pipe(
@@ -83,7 +83,7 @@ export class UsuarioService {
         localStorage.setItem('token', response.token);
       })
       );
-    };
+    }
     loginGoogle = ( token) => {
       return this.http.post(`${this.HTTP_URL}/login/google`, {token})
       .pipe(
@@ -91,7 +91,7 @@ export class UsuarioService {
           localStorage.setItem('token', response.token);
         })
         );
-      };
+      }
 crearUsuario = ( formData: RegisterForm) => {
   return this.http.post(`${this.HTTP_URL}/usuarios`, formData)
             .pipe(
@@ -99,15 +99,15 @@ crearUsuario = ( formData: RegisterForm) => {
                 localStorage.setItem('token', response.token);
               })
             );
-};
-    
+}
+
 actualizarUsuario = (data: { email: string, nombre: string, rol: string }) => {
     data = {
       ...data,
       rol: this.usuario.rol
     };
     return this.http.put(`${this.HTTP_URL}/usuarios/${this.getUid}`,data, this.getHeaders);
-};
+}
 
 cargarUsuarios = ( desde: number = 0 )=> {
   return this.http.get<CargarUsuario>(`${this.HTTP_URL}/usuarios?desde=${desde}`, this.getHeaders)
@@ -116,15 +116,15 @@ cargarUsuarios = ( desde: number = 0 )=> {
               map( (response: any) => {                
                 const usuarios = response.usuarios.map(
                   (usuario: Usuario) => new Usuario( usuario.nombre ,usuario.email, '', usuario.img, usuario.google, usuario.rol, usuario.uid))
-                return {total: response.total, usuarios: usuarios};
+                return {total: response.total, usuarios};
               })
             );
 };
 
 eliminarUsuario = ( usuario: Usuario ) => {
-  return this.http.delete<MensajeUsuario>(`${this.HTTP_URL}/usuarios/${usuario.uid}`, this.getHeaders);  
+  return this.http.delete<MensajeUsuario>(`${this.HTTP_URL}/usuarios/${usuario.uid}`, this.getHeaders);
 }
 guardarUsuario = (usuario: Usuario) => {
   return this.http.put(`${this.HTTP_URL}/usuarios/${usuario.uid}`,usuario, this.getHeaders);
-};
+}
 }
