@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import  Swal  from 'sweetalert2';
+import Swal from 'sweetalert2';
 
 import { UsuarioService } from '../../services/usuario.service';
 
@@ -11,19 +11,19 @@ import { UsuarioService } from '../../services/usuario.service';
   styleUrls: [ './register.component.css' ]
 })
 export class RegisterComponent implements OnInit {
-  
+
   formSubmitted = false;
 
   registerForm = this.formBuilder.group({
     nombre: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    password2:['', Validators.required],
+    password2: ['', Validators.required],
     terminos: [false, Validators.required ]
   }, {
     validators: this.passwordIguales('password', 'password2')
   });
-  constructor( 
+  constructor(
     private formBuilder: FormBuilder ,
     private router: Router,
     private usuarioService: UsuarioService
@@ -42,14 +42,13 @@ export class RegisterComponent implements OnInit {
     this.usuarioService.crearUsuario(this.registerForm.value)
       .subscribe( response => {
         this.router.navigateByUrl('/');
-        
       }, (err) => {
-        Swal.fire('Atento',` ${err.error.msg}: ${this.registerForm.get('email').value}`,'warning');
+        Swal.fire('Atento', ` ${err.error.msg}: ${this.registerForm.get('email').value}`, 'warning');
       }
       );
   }
   // validamos campos
-  campoValido = ( campo: string ):boolean => {
+  campoValido = ( campo: string ): boolean => {
     if ( this.registerForm.get(campo).invalid && this.formSubmitted ) {
       return true;
     } else {
@@ -67,13 +66,13 @@ export class RegisterComponent implements OnInit {
     const pass1 = this.registerForm.get('password').value;
     const pass2 = this.registerForm.get('password2').value;
 
-    if ( (pass1 != pass2) && this.formSubmitted ) {
+    if ( (pass1 !== pass2) && this.formSubmitted ) {
       return true;
     } else {
       return false;
     }
-  } 
-  passwordIguales  ( pass1Name: string, pass2Name: string)   {
+  }
+  passwordIguales( pass1Name: string, pass2Name: string): any   {
     return ( formGroup: FormGroup ) => {
       const pass1Control = formGroup.get(pass1Name);
       const pass2Control = formGroup.get(pass2Name);

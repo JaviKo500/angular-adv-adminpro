@@ -30,7 +30,7 @@
                                 <th class="w100">Avatar</th>
                                 <th>Email</th>
                                 <th>Nombre</th>
-                                <th class="200">Role</th>
+                                <th class="">Role</th>
                                 <th>Auth</th>
                                 <th class="text-nowrap w100">Action</th>
                             </tr>
@@ -42,7 +42,7 @@
                                 </td>
                                 <td>{{usuario.email}}</td>
                                 <td>{{usuario.nombre}}</td>
-                                <td class="w200">
+                                <td class="wh-200">
                                     <select name="" id="" class="form-control" [(ngModel)]="usuario.rol" (change)="cambiarRole(usuario)">
                                         <option value="ADMIN_ROLE">Administrador</option>
                                         <option value="USER_ROLE">User</option>

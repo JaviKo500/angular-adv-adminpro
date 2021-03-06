@@ -2,6 +2,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 
 import { AuthGuard } from '../guards/auth.guard';
+import { AdminGuard } from '../guards/admin.guard';
 
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -17,6 +18,7 @@ import { UsuariosComponent } from './mantenimientos/usuarios/usuarios.component'
 import { HospitalesComponent } from './mantenimientos/hospitales/hospitales.component';
 import { MedicosComponent } from './mantenimientos/medicos/medicos.component';
 import { MedicoComponent } from './mantenimientos/medicos/medico.component';
+import { BusquedaComponent } from './busqueda/busqueda.component';
 
 
 const routes: Routes = [
@@ -26,6 +28,7 @@ const routes: Routes = [
     children: [
       { path: '', component: DashboardComponent, data: { title: 'Dashboard'} },
       { path: 'account-settings', component: AccountSettingsComponent, data: { title: 'Account Settings'}},
+      { path: 'buscar/:termino', component: BusquedaComponent, data: { title: 'Búsquedas'}},
       { path: 'grafica1', component: Grafica1Component, data: { title: 'Graficas'}},
       { path: 'perfil', component: PerfilComponent, data: { title: 'My perfil usuario'}},
       { path: 'progres', component: ProgressComponent, data: { title: 'Progress'}},
@@ -33,10 +36,11 @@ const routes: Routes = [
       { path: 'rxjs', component: RxjsComponent, data: { title: 'Rxjs'}},
 
       // ,amteniminetos
-      { path: 'usuarios', component: UsuariosComponent, data: { title: 'Usuarios'}},
       { path: 'hospitales', component: HospitalesComponent, data: { title: 'Hospitales'}},
       { path: 'medicos', component: MedicosComponent, data: { title: 'Médicos'}},
-      { path: 'medico/:id', component: MedicoComponent, data: { title: 'Médico'}}
+      { path: 'medico/:id', component: MedicoComponent, data: { title: 'Médico'}},
+      // rutas admin
+      { path: 'usuarios', canActivate: [AdminGuard], component: UsuariosComponent, data: { title: 'Usuarios'}},
     ]
   },
 ];

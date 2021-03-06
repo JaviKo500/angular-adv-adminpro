@@ -57,5 +57,9 @@ export class BusquedasService {
                         }
                       } )
                     );
-  };
-}
+  }
+
+  busquedaGlobal = ( termino: string ) => {
+    return this.http.get<any>(`${this.HTTP_URL}/total/${termino}`, this.getHeaders);
+  }
+ }

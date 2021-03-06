@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SettingsService } from '../services/settings.service';
+import { SidebarService } from '../services/sidebar.service';
 // tslint:disable-next-line: typedef
 declare function customInitFunctions();
 @Component({
@@ -10,10 +11,14 @@ declare function customInitFunctions();
 })
 export class PagesComponent implements OnInit {
 
-  constructor( private settingService: SettingsService) { }
+  constructor(
+    private settingService: SettingsService,
+    private sideBarService: SidebarService
+  ) { }
 
   ngOnInit(): void {
-    this.settingService.setColorGlobalTheme();
     customInitFunctions();
+    this.sideBarService.cargarMenu();
+    this.settingService.setColorGlobalTheme();
   }
 }
