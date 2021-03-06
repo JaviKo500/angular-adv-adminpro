@@ -6,7 +6,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 
 
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.prod';
 import { RegisterForm } from '../interfaces/register-form.interface';
 import { LoginForm } from '../interfaces/login-form.interface';
 import { CargarUsuario, MensajeUsuario } from '../interfaces/cargar-usuarios.interface';

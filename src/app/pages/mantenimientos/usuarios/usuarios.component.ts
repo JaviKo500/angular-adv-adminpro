@@ -57,13 +57,13 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     if ( this.desde < 0  ) {
       this.desde = 0;
     } else if ( this.desde > this.totalUsuarios) {
-      this.desde -=valor;
+      this.desde -= valor;
     }
     this.cargarUsuarios();
-  };
+  }
 
   buscar = ( termino: string ): void => {
-    if ( termino.length === 0) { 
+    if ( termino.length === 0) {
       this.usuarios = this.usuariosTemp;
       return;
     }
